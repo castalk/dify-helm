@@ -2648,3 +2648,15 @@ externalMilvus:
   user: "user"
   password: "Milvus"
   useTLS: false
+
+###################################
+# Support disabled secret and provide by ExternalSecret
+# - just set `secret.enabled` to `false` and provide the secret by extraDeploy
+###################################
+secret:
+  enabled: true
+
+###################################
+# Support extra manifest like ExternalSecret
+###################################
+extraDeploy: []
