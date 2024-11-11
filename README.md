@@ -13,6 +13,7 @@ helm install my-release dify/dify
 ## Supported Component 
 ### Components that could be deployed on kubernetes in current version
 - [x] core (`api`, `worker`, `sandbox`)
+- [x] ssrf_proxy
 - [x] proxy (via built-in `nginx` or `ingress`)
 - [x] redis
 - [x] postgresql
@@ -28,7 +29,8 @@ helm install my-release dify/dify
 - [x] object storage
 - [x] weaviate
 - [x] qdrant
-- [X] milvus
+- [x] milvus
+- [x] pgvector
 
 ## Contributors
 <a href="https://github.com/borispolonsky/dify-helm/graphs/contributors">

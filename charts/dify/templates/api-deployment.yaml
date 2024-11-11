@@ -1,5 +1,5 @@
 {{- if and .Values.api.enabled}}
-{{- $usePvc := not (or .Values.externalS3.enabled .Values.externalAzureBlobStorage.enabled) -}}
+{{- $usePvc := not (or .Values.externalS3.enabled .Values.externalOSS.enabled .Values.externalAzureBlobStorage.enabled) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,6 +37,9 @@ spec:
         */}}
 {{ include "dify.ud.labels" . | indent 8 }}
     spec:
+      {{- if .Values.api.serviceAccountName}}
+      serviceAccountName: {{ .Values.api.serviceAccountName }}
+      {{- end }}
       {{- if eq .Release.Name "dify"}}
       {{/*
       Disable service environment variables,
@@ -54,7 +57,37 @@ spec:
       - image: "{{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}"
         imagePullPolicy: "{{ .Values.image.api.pullPolicy }}"
         name: api
+        {{- if .Values.api.customLivenessProbe }}
+        livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.api.customLivenessProbe "context" $) | nindent 10 }}
+        {{- else if .Values.api.livenessProbe.enabled }}
+        livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.api.livenessProbe "enabled") "context" $) | nindent 10 }}
+          httpGet:
+            path: /health
+            port: api
+        {{- end }}
+        {{- if .Values.api.customReadinessProbe }}
+        readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.api.customReadinessProbe "context" $) | nindent 10 }}
+        {{- else if .Values.api.readinessProbe.enabled }}
+        readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.api.readinessProbe "enabled") "context" $) | nindent 10 }}
+          httpGet:
+            path: /health
+            port: api
+        {{- end }}
+        {{- if .Values.api.customStartupProbe }}
+        startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.api.customStartupProbe "context" $) | nindent 10 }}
+        {{- else if .Values.api.startupProbe.enabled }}
+        startupProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.api.startupProbe "enabled") "context" $) | nindent 10 }}
+          tcpSocket:
+            port: api
+        {{- end }}
         env:
+        {{- if .Values.sandbox.enabled }}
+        - name: CODE_EXECUTION_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "dify.sandbox.fullname" . }}
+              key: "API_KEY"
+        {{- end }}
         {{- if .Values.api.extraEnv }}
           {{- toYaml .Values.api.extraEnv | nindent 8 }}
         {{- end }}

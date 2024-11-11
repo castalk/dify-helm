@@ -5,7 +5,7 @@
 image:
   api:
     repository: langgenius/dify-api
-    tag: "0.6.3"
+    tag: "0.6.16"
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -15,7 +15,7 @@ image:
     #   - myRegistryKeySecretName
   web:    
     repository: langgenius/dify-web
-    tag: "0.6.3"
+    tag: "0.6.16"
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -25,7 +25,7 @@ image:
     #   - myRegistryKeySecretName
   sandbox:
     repository: langgenius/dify-sandbox
-    tag: "latest"
+    tag: "0.2.1"
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -44,6 +44,17 @@ image:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
+  ssrfProxy:
+    repository: ubuntu/squid
+    tag: latest
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+
 api:
   enabled: true
   replicas: 1
@@ -51,6 +62,38 @@ api:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ## Configure extra options for api containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param api.livenessProbe.enabled Enable livenessProbe on api nodes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param api.readinessProbe.enabled Enable readinessProbe on api nodes
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param api.startupProbe.enabled Enable startupProbe on api containers
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param api.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param api.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param api.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
   extraEnv:
   # Apply your own Environment Variables if necessary.
   # Variable defined here takes higher priority than those from `ConfigMap` generated given `.Values`
@@ -121,10 +164,12 @@ api:
     # SMTP Configuration
     smtp:
       server: "smtp.server.com"
-      port: 587
+      port: 465
       username: "YOUR EMAIL"
       password: "YOUR EMAIL PASSWORD"
-      useTLS: true
+      tls:
+        enabled: true
+        optimistic: false
   # When enabled, migrations will be executed prior to application startup and the application will start after the migrations have completed.
   migration: true
   # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
@@ -158,6 +203,14 @@ worker:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ## Configure extra options for worker containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param worker.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param worker.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param worker.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
   extraEnv:
   # Apply your own Environment Variables if necessary.
   # Variable defined here takes higher priority than those from `ConfigMap` generated given `.Values`
@@ -180,6 +233,14 @@ proxy:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ## Configure extra options for proxy containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param proxy.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param proxy.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param proxy.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
   extraEnv:
   # Apply your own Environment Variables if necessary
   # - name: LANG
@@ -219,6 +280,38 @@ web:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ## Configure extra options for web containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param web.livenessProbe.enabled Enable livenessProbe on web nodes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param web.readinessProbe.enabled Enable readinessProbe on web nodes
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param web.startupProbe.enabled Enable startupProbe on web containers
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param web.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param web.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param web.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
   extraEnv:
   # Apply your own Environment Variables if necessary
   - name: EDITION
@@ -236,12 +329,42 @@ sandbox:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+  ## Configure extra options for sandbox containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param sandbox.livenessProbe.enabled Enable livenessProbe on sandbox nodes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 1
+    periodSeconds: 5
+    timeoutSeconds: 5
+    failureThreshold: 2
+    successThreshold: 1
+  ## @param sandbox.readinessProbe.enabled Enable readinessProbe on sandbox nodes
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 2
+    successThreshold: 1
+  ## @param sandbox.startupProbe.enabled Enable startupProbe on sandbox containers
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 2
+    successThreshold: 1
+  ## @param sandbox.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param sandbox.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param sandbox.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
   extraEnv:
   # Apply your own Environment Variables if necessary
   # - name: LANG
   #   value: "C.UTF-8"
-  - name: GIN_MODE
-    value: release
   - name: WORKER_TIMEOUT
     value: "15"
   service:
@@ -253,6 +376,53 @@ sandbox:
     apiKey: "dify-sandbox"
   privileged:
     false
+
+ssrfProxy:
+  enabled: false
+  replicas: 1
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  ## Configure extra options for ssrf proxy containers' liveness, readiness and startup probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+  ## @param ssrfProxy.customLivenessProbe Custom livenessProbe that overrides the default one
+  customLivenessProbe: {}
+  ## @param ssrfProxy.customReadinessProbe Custom readinessProbe that overrides the default one
+  customReadinessProbe: {}
+  ## @param ssrfProxy.customStartupProbe Custom startupProbe that overrides the default one
+  customStartupProbe: {}
+  extraEnv:
+  # Apply your own Environment Variables if necessary
+  # - name: LANG
+  #   value: "C.UTF-8"
+  log:
+    persistence:
+      ## If true, create/use a Persistent Volume Claim for log
+      ## If false, flush logs to stdout & stderr
+      ##
+      enabled: false
+      mountPath: "/var/log/squid"
+      annotations:
+        helm.sh/resource-policy: keep
+      persistentVolumeClaim:
+        existingClaim: ""
+        ## Squid Logs Persistent Volume Storage Class
+        ## If defined, storageClassName: <storageClass>
+        ## If set to "-", storageClassName: "", which disables dynamic provisioning
+        ## If undefined (the default) or set to null, no storageClassName spec is
+        ##   set, choosing the default provisioner.
+        ## ReadWriteMany access mode required for squid
+        ##
+        storageClass:
+        accessModes: ReadWriteMany
+        size: 1Gi
+        subPath: ""
+  service:
+    port: 3128
+    annotations: {}
+    labels: {}
+    clusterIP: ""
 
 postgresql:
   enabled: true
@@ -2594,7 +2764,6 @@ externalS3:
   useIAM: false
   iamEndpoint: ""
 
-
 ###################################
 # External Azure Blob Storage
 # - these configs are only used when `externalS3.enabled` is false and `externalAzureBlobStorage.enabled` is true
@@ -2605,6 +2774,19 @@ externalAzureBlobStorage:
   account: "https://xxx.r2.cloudflarestorage.com"
   key: "difyai"
   container: "difyai-container"
+
+###################################
+# External OSS
+# - these configs are only used when both `externalS3.enabled` and `externalAzureBlobStorage.enabled` are false and `externalOSS.enabled` is true
+###################################
+externalOSS:
+  enabled: false
+  endpoint: "https://oss-ap-southeast-1-internal.aliyuncs.com"
+  accessKey: "ak-difyai"
+  secretKey: "sk-difyai"
+  region: "ap-southeast-1"
+  bucketName: "difyai"
+  authVersion: v4
 
 ###################################
 # External Redis
@@ -2627,7 +2809,6 @@ externalWeaviate:
   endpoint: "http://weaviate:8080"
   apiKey: "WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih"
 
-
 ###################################
 # External Qdrant
 # - these configs take effect only if `externalWeaviate.enabled` is `false` and `externalQdrant.enabled` is `true`
@@ -2636,6 +2817,10 @@ externalQdrant:
   enabled: false
   endpoint: "https://your-qdrant-cluster-url.qdrant.tech/"
   apiKey: "ak-difyai"
+  timeout: 20
+  grpc:
+    enabled: false
+    port: 6334
 
 ###################################
 # External Milvus
@@ -2660,3 +2845,14 @@ secret:
 # Support extra manifest like ExternalSecret
 ###################################
 extraDeploy: []
+
+# External Pgvector
+# - these configs take effect only if both `externalWeaviate.enabled`, `externalQdrant.enabled` and `externalMilvus.enabled` are set as `false` and `externalPgvector.enabled` is `true`
+###################################
+externalPgvector:
+  enabled: false
+  username: "postgres"
+  password: "difyai123456"
+  address: "pgvector"
+  port: 5432
+  dbName: dify
