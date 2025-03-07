@@ -7,13 +7,17 @@
 Deploy [langgenius/dify](https://github.com/langgenius/dify), an LLM-based chatbot app on Kubernetes with Helm chart.
 
 ## Installation
+
 ### TL;DR
+
 ```shell
 helm repo add dify https://borispolonsky.github.io/dify-helm
 helm repo update
 helm install my-release dify/dify
 ```
+
 For customized installation, please refer to the [README.md](https://github.com/BorisPolonsky/dify-helm/blob/master/charts/dify/README.md) file.
+
 ## Network Architecture
 
 The following diagram illustrates the complete network architecture and service topology of the Dify Helm deployment:
@@ -155,18 +159,36 @@ The Nginx proxy handles traffic routing with the following rules:
 
 ### Core Components
 
-| Component | Image | Port | Role |
-|-----------|-------|------|------|
-| **API** | `langgenius/dify-api:1.9.1` | 5001 | RESTful API server, business logic processing |
-| **Web** | `langgenius/dify-web:1.9.1` | 3000 | Web UI frontend |
-| **Worker** | `langgenius/dify-api:1.9.1` | - | Background task processing (Celery) |
-| **Beat** | `langgenius/dify-api:1.9.1` | - | Periodic task scheduler (Celery Beat) |
-| **Sandbox** | `langgenius/dify-sandbox:0.2.12` | 8194 | Secure code execution environment |
-| **Plugin Daemon** | `langgenius/dify-plugin-daemon:0.3.0-local` | 5002, 5003 | Plugin management and execution |
-| **SSRF Proxy** | `ubuntu/squid:latest` | 3128 | External request security proxy |
-| **Nginx Proxy** | `nginx:latest` | 80 | Reverse proxy, load balancing |
+| Component         | Image                                       | Port       | Role                                          |
+| ----------------- | ------------------------------------------- | ---------- | --------------------------------------------- |
+| **API**           | `langgenius/dify-api:1.9.1`                 | 5001       | RESTful API server, business logic processing |
+| **Web**           | `langgenius/dify-web:1.9.1`                 | 3000       | Web UI frontend                               |
+| **Worker**        | `langgenius/dify-api:1.9.1`                 | -          | Background task processing (Celery)           |
+| **Beat**          | `langgenius/dify-api:1.9.1`                 | -          | Periodic task scheduler (Celery Beat)         |
+| **Sandbox**       | `langgenius/dify-sandbox:0.2.12`            | 8194       | Secure code execution environment             |
+| **Plugin Daemon** | `langgenius/dify-plugin-daemon:0.3.0-local` | 5002, 5003 | Plugin management and execution               |
+| **SSRF Proxy**    | `ubuntu/squid:latest`                       | 3128       | External request security proxy               |
+| **Nginx Proxy**   | `nginx:latest`                              | 80         | Reverse proxy, load balancing                 |
 
 ### External Components Supported by this App with Proper Configuration
+
+## Supported Component
+
+### Components that could be deployed on kubernetes in current version
+
+- [x] core (`api`, `worker`, `sandbox`)
+- [x] ssrf_proxy
+- [x] proxy (via built-in `nginx` or `ingress`)
+- [x] redis
+- [x] postgresql
+- [x] persistent storage
+- [x] extra manifests
+- [ ] object storage
+- [x] weaviate
+- [ ] qdrant
+- [ ] milvus
+
+### External components that can be used by this app with proper configuration
 
 - [x] Redis
 - [x] PostgreSQL
