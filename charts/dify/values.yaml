@@ -3104,6 +3104,17 @@ externalMilvus:
   user: ""
   password: ""
 
+# Support disabled secret and provide by ExternalSecret
+# - just set `secret.enabled` to `false` and provide the secret by extraDeploy
+###################################
+secret:
+  enabled: true
+
+###################################
+# Support extra manifest like ExternalSecret
+###################################
+extraDeploy: []
+
 ###################################
 # External Pgvector
 # - these configs take effect only if both `externalWeaviate.enabled`, `externalQdrant.enabled` and `externalMilvus.enabled` are set as `false` and `externalPgvector.enabled` is `true`
