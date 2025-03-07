@@ -20,6 +20,7 @@ helm install my-release dify/dify
 - [x] redis
 - [x] postgresql
 - [x] persistent storage
+- [x] extra manifests
 - [ ] object storage
 - [x] weaviate
 - [ ] qdrant
