@@ -33,6 +33,36 @@ entries:
     version: 0.23.0-rc2-castalk
   - apiVersion: v2
     appVersion: 0.15.3
+    created: "2025-03-10T03:59:23.355845841Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - postgres
+      version: 12.5.6
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - redis
+      version: 16.13.2
+    - condition: weaviate.enabled
+      name: weaviate
+      repository: https://weaviate.github.io/weaviate-helm
+      tags:
+      - vector
+      - search
+      version: 16.1.0
+    description: Instant cloud deployment for https://github.com/langgenius/dify.
+    digest: 7bba42a9f884718503d7ee447c09439990a282ada6b800381e36fdc4e9f67a59
+    name: dify
+    type: application
+    urls:
+    - https://github.com/castalk/dify-helm/releases/download/dify-0.22.2/dify-0.22.2.tgz
+    version: 0.22.2
+  - apiVersion: v2
+    appVersion: 0.15.3
     created: "2025-03-10T03:14:25.254063504Z"
     dependencies:
     - condition: postgresql.enabled
@@ -631,4 +661,4 @@ entries:
     urls:
     - https://github.com/BorisPolonsky/dify-helm/releases/download/dify-0.14.0-rc1/dify-0.14.0-rc1.tgz
     version: 0.14.0-rc1
-generated: "2025-03-10T03:14:25.254260291Z"
+generated: "2025-03-10T03:59:23.355982927Z"
