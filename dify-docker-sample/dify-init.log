@@ -1,0 +1,7 @@
+ worker Pulling 
+ plugin_daemon Pulling 
+ api Pulling 
+ api Error Get "https://registry-1.docker.io/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+ plugin_daemon  Interrupted
+ worker  Interrupted
+Error response from daemon: Get "https://registry-1.docker.io/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
