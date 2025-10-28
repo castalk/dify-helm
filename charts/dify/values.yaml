@@ -2838,3 +2838,8 @@ externalSecret:
       ELASTICSEARCH_PASSWORD:
         key: "dify/elasticsearch"
         property: "password"
+
+###################################
+# Support extra manifest like ExternalSecret
+###################################
+extraDeploy: []
