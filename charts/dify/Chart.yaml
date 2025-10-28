@@ -22,25 +22,25 @@ version: 0.31.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.9.1"
+appVersion: "1.9.2"
 
 dependencies:
-- name: postgresql
-  version: 12.5.6
-  repository: https://charts.bitnami.com/bitnami
-  condition: postgresql.enabled
-  tags:
-    - postgres
-- name: redis
-  version: 16.13.2
-  repository: https://charts.bitnami.com/bitnami
-  condition: redis.enabled
-  tags:
-    - redis
-- name: weaviate
-  version: 16.1.0
-  repository: https://weaviate.github.io/weaviate-helm
-  condition: weaviate.enabled
-  tags:
-    - vector
-    - search
+  - name: postgresql
+    version: 12.5.6
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    tags:
+      - postgres
+  - name: redis
+    version: 16.13.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+    tags:
+      - redis
+  - name: weaviate
+    version: 16.1.0
+    repository: https://weaviate.github.io/weaviate-helm
+    condition: weaviate.enabled
+    tags:
+      - vector
+      - search
